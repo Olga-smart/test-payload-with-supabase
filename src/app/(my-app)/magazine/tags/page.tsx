@@ -3,10 +3,13 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import styles from "./page.module.css";
 
-export default async function Page({ searchParams }) {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function Page(props: { searchParams: SearchParams }) {
   const payload = await getPayload({ config });
-  const params = await searchParams;
-  const currentPage = parseInt(params.page) || 1;
+  const params = await props.searchParams;
+  const currentPage =
+    typeof params.page === "string" ? parseInt(params.page) : 1;
 
   const tags = await payload.find({
     collection: "tags",
@@ -37,7 +40,9 @@ export default async function Page({ searchParams }) {
             <a
               href={`?page=${page}`}
               key={page}
-              className={`${styles.page} ${currentPage === page ? styles.currentPage : ""}`}
+              className={`${styles.page} ${
+                currentPage === page ? styles.currentPage : ""
+              }`}
             >
               {page}
             </a>

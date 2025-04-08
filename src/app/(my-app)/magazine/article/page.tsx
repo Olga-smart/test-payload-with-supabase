@@ -4,11 +4,21 @@ import { getPayload } from "payload";
 import config from "@payload-config";
 import { formatDate } from "@/lib/utils";
 import styles from "./page.module.css";
+import {
+  Key,
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+} from "react";
 
-export default async function Page({ searchParams }) {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function Page(props: { searchParams: SearchParams }) {
   const payload = await getPayload({ config });
-  const params = await searchParams;
-  const currentPage = parseInt(params.page) || 1;
+  const params = await props.searchParams;
+  const currentPage =
+    typeof params.page === "string" ? parseInt(params.page) : 1;
 
   const articles = await payload.find({
     collection: "articles",
@@ -36,15 +46,44 @@ export default async function Page({ searchParams }) {
           />
           <div className={styles.articleMeta}>
             <span className={styles.articleType}>Articles</span>
-            {article.tags.map((tag) => (
-              <Link
-                href={`/magazine/tags/${tag.slug}`}
-                key={tag.id}
-                className={styles.articleTag}
-              >
-                #{tag.name}
-              </Link>
-            ))}
+            {article.tags.map(
+              (tag: {
+                slug: any;
+                id: Key | null | undefined;
+                name:
+                  | string
+                  | number
+                  | bigint
+                  | boolean
+                  | ReactElement<unknown, string | JSXElementConstructor<any>>
+                  | Iterable<ReactNode>
+                  | ReactPortal
+                  | Promise<
+                      | string
+                      | number
+                      | bigint
+                      | boolean
+                      | ReactPortal
+                      | ReactElement<
+                          unknown,
+                          string | JSXElementConstructor<any>
+                        >
+                      | Iterable<ReactNode>
+                      | null
+                      | undefined
+                    >
+                  | null
+                  | undefined;
+              }) => (
+                <Link
+                  href={`/magazine/tags/${tag.slug}`}
+                  key={tag.id}
+                  className={styles.articleTag}
+                >
+                  #{tag.name}
+                </Link>
+              )
+            )}
             <span className={styles.articleDate}>
               {formatDate(article.publishedAt)}
             </span>
@@ -64,7 +103,9 @@ export default async function Page({ searchParams }) {
             <a
               href={`?page=${page}`}
               key={page}
-              className={`${styles.page} ${currentPage === page ? styles.currentPage : ""}`}
+              className={`${styles.page} ${
+                currentPage === page ? styles.currentPage : ""
+              }`}
             >
               {page}
             </a>

@@ -115,18 +115,6 @@
   font-size: 16px;
 }
 
-.intro {
-  font-family: var(--font-montserrat);
-  font-size: 28px;
-  line-height: 1.5;
-  margin-bottom: 96px;
-}
-
-.text {
-  font-size: 20px;
-  line-height: 30px;
-}
-
 .metaFooter {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -152,7 +140,7 @@
 }
 
 .articleBody {
-  p {
+  & p {
     &:not(:first-child) {
       margin-top: 20px;
     }
@@ -162,7 +150,7 @@
     }
   }
 
-  h2 {
+  & h2 {
     margin-bottom: 56px;
     font-family: var(--font-montserrat);
     font-size: 48px;
@@ -174,7 +162,7 @@
     }
   }
 
-  h3 {
+  & h3 {
     font-size: 28px;
     line-height: 42px;
     font-weight: 600;
@@ -184,12 +172,13 @@
     }
   }
 
-  img {
+  & img {
     max-width: 100%;
     height: auto;
   }
 
-  ul, ol {
+  & ul, 
+  & ol {
     padding-left: 30px;
   }
 }

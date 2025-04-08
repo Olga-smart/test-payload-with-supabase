@@ -1,5 +1,5 @@
 {
-  "name": "test-payload",
+  "name": "test-payload-with-supabase",
   "version": "0.1.0",
   "private": true,
   "scripts": {

@@ -4,11 +4,19 @@ import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import { RichText } from "@payloadcms/richtext-lexical/react";
-import type { SerializedEditorState } from "@payloadcms/richtext-lexical/lexical";
 import { formatDate } from "@/lib/utils";
 import styles from "./page.module.css";
+import {
+  Key,
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+} from "react";
 
-export default async function Page({ params }) {
+type Params = Promise<{ slug: string }>;
+
+export default async function Page({ params }: { params: Params }) {
   const { slug } = await params;
   const payload = await getPayload({ config });
 
@@ -71,19 +79,9 @@ export default async function Page({ params }) {
           </div>
         </div>
       </div>
-      {/* <div className="container">
-        <div className={styles.articleContainer}>
-          <div className={styles.intro}>{article.description}</div>
-        </div>
-      </div>
       <div className="container">
-        <div className={styles.articleContainer}>
-          <div className={styles.text}>{article.description}</div>
-        </div>
-      </div> */}
-      <div className="container">
-        <div className={styles.articleContainer}>
-          <RichText data={article.content} className={styles.articleBody} />
+        <div className={`${styles.articleContainer} ${styles.articleBody}`}>
+          <RichText data={article.content} />
         </div>
       </div>
       <div className="container">
@@ -97,15 +95,44 @@ export default async function Page({ params }) {
               {formatDate(article.publishedAt)}
             </span>
             <span className={styles.tags}>
-              {article.tags.map((tag) => (
-                <Link
-                  href={`/magazine/tags/${tag.slug}`}
-                  key={tag.id}
-                  className={styles.tag}
-                >
-                  #{tag.name}
-                </Link>
-              ))}
+              {article.tags.map(
+                (tag: {
+                  slug: any;
+                  id: Key | null | undefined;
+                  name:
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | ReactPortal
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                }) => (
+                  <Link
+                    href={`/magazine/tags/${tag.slug}`}
+                    key={tag.id}
+                    className={styles.tag}
+                  >
+                    #{tag.name}
+                  </Link>
+                )
+              )}
             </span>
           </div>
         </div>

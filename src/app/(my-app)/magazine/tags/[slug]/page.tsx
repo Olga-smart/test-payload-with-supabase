@@ -1,14 +1,28 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { NextPageContext } from "next";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import styles from "./page.module.css";
+import {
+  Key,
+  ReactElement,
+  JSXElementConstructor,
+  ReactNode,
+  ReactPortal,
+} from "react";
 
-export default async function Page({ params, searchParams }) {
-  const { slug } = await params;
-  const { page } = await searchParams;
-  const currentPage = parseInt(page) || 1;
+type Params = Promise<{ slug: string }>;
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function Page(props: {
+  params: Params;
+  searchParams: SearchParams;
+}) {
+  const { slug } = await props.params;
+  const { page } = await props.searchParams;
+  const currentPage = typeof page === "string" ? parseInt(page) : 1;
   const payload = await getPayload({ config });
 
   const tags = await payload.find({
@@ -47,7 +61,9 @@ export default async function Page({ params, searchParams }) {
           <Link
             key={tag.id}
             href={`/magazine/tags/${tag.slug}`}
-            className={`${styles.tag} ${tag.slug === slug ? styles.currentTag : ""}`}
+            className={`${styles.tag} ${
+              tag.slug === slug ? styles.currentTag : ""
+            }`}
           >
             #{tag.name}
           </Link>
@@ -71,15 +87,44 @@ export default async function Page({ params, searchParams }) {
             <div className={styles.articleAuthor}>{article.author.name}</div>
             <div className={styles.articleMeta}>
               <span className={styles.articleType}>Articles</span>
-              {article.tags.map((tag) => (
-                <Link
-                  href={`/magazine/tags/${tag.slug}`}
-                  key={tag.id}
-                  className={styles.articleTag}
-                >
-                  #{tag.name}
-                </Link>
-              ))}
+              {article.tags.map(
+                (tag: {
+                  slug: any;
+                  id: Key | null | undefined;
+                  name:
+                    | string
+                    | number
+                    | bigint
+                    | boolean
+                    | ReactElement<unknown, string | JSXElementConstructor<any>>
+                    | Iterable<ReactNode>
+                    | ReactPortal
+                    | Promise<
+                        | string
+                        | number
+                        | bigint
+                        | boolean
+                        | ReactPortal
+                        | ReactElement<
+                            unknown,
+                            string | JSXElementConstructor<any>
+                          >
+                        | Iterable<ReactNode>
+                        | null
+                        | undefined
+                      >
+                    | null
+                    | undefined;
+                }) => (
+                  <Link
+                    href={`/magazine/tags/${tag.slug}`}
+                    key={tag.id}
+                    className={styles.articleTag}
+                  >
+                    #{tag.name}
+                  </Link>
+                )
+              )}
             </div>
           </div>
         ))}
@@ -90,7 +135,9 @@ export default async function Page({ params, searchParams }) {
             <a
               href={`?page=${page}`}
               key={page}
-              className={`${styles.page} ${currentPage === page ? styles.currentPage : ""}`}
+              className={`${styles.page} ${
+                currentPage === page ? styles.currentPage : ""
+              }`}
             >
               {page}
             </a>
