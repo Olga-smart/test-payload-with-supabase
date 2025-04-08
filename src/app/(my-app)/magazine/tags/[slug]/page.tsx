@@ -1,17 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { NextPageContext } from "next";
-import { getPayload } from "payload";
+import { getPayload, PaginatedDocs } from "payload";
 import config from "@payload-config";
+import type { Tag } from "@payload-types";
 import styles from "./page.module.css";
-import {
-  Key,
-  ReactElement,
-  JSXElementConstructor,
-  ReactNode,
-  ReactPortal,
-} from "react";
 
 type Params = Promise<{ slug: string }>;
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
@@ -25,7 +18,7 @@ export default async function Page(props: {
   const currentPage = typeof page === "string" ? parseInt(page) : 1;
   const payload = await getPayload({ config });
 
-  const tags = await payload.find({
+  const tags: PaginatedDocs<Tag> = await payload.find({
     collection: "tags",
     sort: "name",
     pagination: false,
@@ -72,58 +65,37 @@ export default async function Page(props: {
       <div className={styles.articles}>
         {articles.docs.map((article) => (
           <div key={article.id} className={styles.articleCard}>
-            <Image
-              className={styles.articleImage}
-              src={article.cover.url}
-              alt={article.title}
-              width="400"
-              height="300"
-            />
+            {typeof article.cover === "object" &&
+              typeof article.cover.url === "string" && (
+                <Image
+                  className={styles.articleImage}
+                  src={article.cover.url}
+                  alt={article.title}
+                  width="400"
+                  height="300"
+                />
+              )}
             <h2 className={styles.articleTitle}>
               <Link href={`/magazine/article/${article.slug}`}>
                 {article.title}
               </Link>
             </h2>
-            <div className={styles.articleAuthor}>{article.author.name}</div>
+            {typeof article.author === "object" && (
+              <div className={styles.articleAuthor}>{article.author.name}</div>
+            )}
             <div className={styles.articleMeta}>
               <span className={styles.articleType}>Articles</span>
-              {article.tags.map(
-                (tag: {
-                  slug: any;
-                  id: Key | null | undefined;
-                  name:
-                    | string
-                    | number
-                    | bigint
-                    | boolean
-                    | ReactElement<unknown, string | JSXElementConstructor<any>>
-                    | Iterable<ReactNode>
-                    | ReactPortal
-                    | Promise<
-                        | string
-                        | number
-                        | bigint
-                        | boolean
-                        | ReactPortal
-                        | ReactElement<
-                            unknown,
-                            string | JSXElementConstructor<any>
-                          >
-                        | Iterable<ReactNode>
-                        | null
-                        | undefined
-                      >
-                    | null
-                    | undefined;
-                }) => (
-                  <Link
-                    href={`/magazine/tags/${tag.slug}`}
-                    key={tag.id}
-                    className={styles.articleTag}
-                  >
-                    #{tag.name}
-                  </Link>
-                )
+              {article.tags?.map(
+                (tag) =>
+                  typeof tag !== "number" && (
+                    <Link
+                      href={`/magazine/tags/${tag.slug}`}
+                      key={tag.id}
+                      className={styles.articleTag}
+                    >
+                      #{tag.name}
+                    </Link>
+                  )
               )}
             </div>
           </div>

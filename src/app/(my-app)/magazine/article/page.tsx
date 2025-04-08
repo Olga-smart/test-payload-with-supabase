@@ -1,16 +1,10 @@
 import Image from "next/image";
 import Link from "next/link";
-import { getPayload } from "payload";
+import { getPayload, PaginatedDocs } from "payload";
 import config from "@payload-config";
+import type { Article } from "@payload-types";
 import { formatDate } from "@/lib/utils";
 import styles from "./page.module.css";
-import {
-  Key,
-  ReactElement,
-  JSXElementConstructor,
-  ReactNode,
-  ReactPortal,
-} from "react";
 
 type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
 
@@ -20,7 +14,7 @@ export default async function Page(props: { searchParams: SearchParams }) {
   const currentPage =
     typeof params.page === "string" ? parseInt(params.page) : 1;
 
-  const articles = await payload.find({
+  const articles: PaginatedDocs<Article> = await payload.find({
     collection: "articles",
     sort: "-publishedAt",
     depth: 1,
@@ -37,55 +31,32 @@ export default async function Page(props: { searchParams: SearchParams }) {
       <h1 className={styles.heading}>All materials</h1>
       {articles.docs.map((article) => (
         <div key={article.id} className={styles.articleCard}>
-          <Image
-            className={styles.articleImage}
-            src={article.cover.url}
-            alt={article.title}
-            width="500"
-            height="300"
-          />
+          {typeof article.cover === "object" &&
+            typeof article.cover.url === "string" && (
+              <Image
+                className={styles.articleImage}
+                src={article.cover.url}
+                alt={article.title}
+                width="500"
+                height="300"
+              />
+            )}
           <div className={styles.articleMeta}>
             <span className={styles.articleType}>Articles</span>
-            {article.tags.map(
-              (tag: {
-                slug: any;
-                id: Key | null | undefined;
-                name:
-                  | string
-                  | number
-                  | bigint
-                  | boolean
-                  | ReactElement<unknown, string | JSXElementConstructor<any>>
-                  | Iterable<ReactNode>
-                  | ReactPortal
-                  | Promise<
-                      | string
-                      | number
-                      | bigint
-                      | boolean
-                      | ReactPortal
-                      | ReactElement<
-                          unknown,
-                          string | JSXElementConstructor<any>
-                        >
-                      | Iterable<ReactNode>
-                      | null
-                      | undefined
-                    >
-                  | null
-                  | undefined;
-              }) => (
-                <Link
-                  href={`/magazine/tags/${tag.slug}`}
-                  key={tag.id}
-                  className={styles.articleTag}
-                >
-                  #{tag.name}
-                </Link>
-              )
+            {article.tags?.map(
+              (tag) =>
+                typeof tag !== "number" && (
+                  <Link
+                    href={`/magazine/tags/${tag.slug}`}
+                    key={tag.id}
+                    className={styles.articleTag}
+                  >
+                    #{tag.name}
+                  </Link>
+                )
             )}
             <span className={styles.articleDate}>
-              {formatDate(article.publishedAt)}
+              {formatDate(new Date(article.publishedAt))}
             </span>
           </div>
           <h2 className={styles.articleTitle}>
@@ -94,7 +65,9 @@ export default async function Page(props: { searchParams: SearchParams }) {
             </Link>
           </h2>
           <div className={styles.articleDescription}>{article.description}</div>
-          <div className={styles.articleAuthor}>{article.author.name}</div>
+          {typeof article.author === "object" && (
+            <div className={styles.articleAuthor}>{article.author.name}</div>
+          )}
         </div>
       ))}
       {articles.totalPages > 1 && (
