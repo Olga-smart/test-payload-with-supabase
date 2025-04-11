@@ -9,6 +9,8 @@ import type { SerializedBlockNode } from "@payloadcms/richtext-lexical";
 import { clsx } from "clsx";
 import { formatDate } from "@/lib/utils";
 import styles from "./page.module.css";
+import { SubscribePanel } from "@/components/SubscribePanel";
+import { AdvertisementPanel } from "@/components/AdvertisementPanel";
 
 type Params = Promise<{ slug: string }>;
 
@@ -80,27 +82,33 @@ export default async function Page({ params }: { params: Params }) {
           </div>
         </div>
       </div>
-      <div className={clsx("container", styles.articleBody)}>
-        {article.content.root.children.map((node, index) => {
-          const blockNode = node as SerializedBlockNode<
-            Record<string, unknown>
-          >;
-          const isFullWidthBlock =
-            node.type === "block" && blockNode.fields?.width === "screen";
-          return (
-            <div
-              key={index}
-              className={clsx(
-                !isFullWidthBlock && styles.articleContainer,
-                isFullWidthBlock && "js-fullWidthSection"
-              )}
-            >
-              <RichText
-                data={{ root: { ...article.content.root, children: [node] } }}
-              />
-            </div>
-          );
-        })}
+      <div className={clsx("container", styles.articleBodyAndSidebarWrapper)}>
+        <div className={styles.articleBody}>
+          {article.content.root.children.map((node, index) => {
+            const blockNode = node as SerializedBlockNode<
+              Record<string, unknown>
+            >;
+            const isFullWidthBlock =
+              node.type === "block" && blockNode.fields?.width === "screen";
+            return (
+              <div
+                key={index}
+                className={clsx(
+                  !isFullWidthBlock && styles.articleContainer,
+                  isFullWidthBlock && "js-fullWidthSection"
+                )}
+              >
+                <RichText
+                  data={{ root: { ...article.content.root, children: [node] } }}
+                />
+              </div>
+            );
+          })}
+        </div>
+        <div className={styles.sidebar}>
+          <SubscribePanel />
+          <AdvertisementPanel />
+        </div>
       </div>
       <div className="container">
         <div className={styles.articleContainer}>
@@ -131,6 +139,7 @@ export default async function Page({ params }: { params: Params }) {
           </div>
         </div>
       </div>
+      <div style={{ height: 400 }}></div>
     </>
   );
 }
