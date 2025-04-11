@@ -1,18 +1,17 @@
 import type { CollectionConfig } from "payload";
-
 import {
-  // BlocksFeature,
+  BlocksFeature,
   FixedToolbarFeature,
   HeadingFeature,
   InlineToolbarFeature,
   lexicalEditor,
 } from "@payloadcms/richtext-lexical";
-
 import {
   MetaTitleField,
   MetaDescriptionField,
 } from "@payloadcms/plugin-seo/fields";
 import { slugField } from "@/fields/slug";
+import { Image } from "@/blocks/Image";
 
 export const Articles: CollectionConfig = {
   slug: "articles",
@@ -79,14 +78,13 @@ export const Articles: CollectionConfig = {
               name: "content",
               type: "richText",
               editor: lexicalEditor({
-                features: ({ rootFeatures }) => {
-                  return [
-                    ...rootFeatures,
-                    HeadingFeature({ enabledHeadingSizes: ["h2", "h3", "h4"] }),
-                    FixedToolbarFeature(),
-                    InlineToolbarFeature(),
-                  ];
-                },
+                features: ({ rootFeatures }) => [
+                  ...rootFeatures,
+                  HeadingFeature({ enabledHeadingSizes: ["h2", "h3", "h4"] }),
+                  BlocksFeature({ blocks: [Image] }),
+                  FixedToolbarFeature(),
+                  InlineToolbarFeature(),
+                ],
               }),
               label: false,
               required: true,

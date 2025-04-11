@@ -4,7 +4,9 @@ import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import config from "@payload-config";
 import type { Article } from "@payload-types";
-import { RichText } from "@payloadcms/richtext-lexical/react";
+import { RichText } from "@/components/RichText";
+import type { SerializedBlockNode } from "@payloadcms/richtext-lexical";
+import { clsx } from "clsx";
 import { formatDate } from "@/lib/utils";
 import styles from "./page.module.css";
 
@@ -78,10 +80,27 @@ export default async function Page({ params }: { params: Params }) {
           </div>
         </div>
       </div>
-      <div className="container">
-        <div className={`${styles.articleContainer} ${styles.articleBody}`}>
-          <RichText data={article.content} />
-        </div>
+      <div className={clsx("container", styles.articleBody)}>
+        {article.content.root.children.map((node, index) => {
+          const blockNode = node as SerializedBlockNode<
+            Record<string, unknown>
+          >;
+          const isFullWidthBlock =
+            node.type === "block" && blockNode.fields?.width === "screen";
+          return (
+            <div
+              key={index}
+              className={clsx(
+                !isFullWidthBlock && styles.articleContainer,
+                isFullWidthBlock && "js-fullWidthSection"
+              )}
+            >
+              <RichText
+                data={{ root: { ...article.content.root, children: [node] } }}
+              />
+            </div>
+          );
+        })}
       </div>
       <div className="container">
         <div className={styles.articleContainer}>
