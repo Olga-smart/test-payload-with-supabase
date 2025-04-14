@@ -176,6 +176,7 @@ export interface Article {
   readingTime: number;
   tags?: (number | Tag)[] | null;
   relatedArticles?: (number | Article)[] | null;
+  TitleForRelatedArticlesSection?: string | null;
   meta?: {
     title?: string | null;
     description?: string | null;
@@ -377,6 +378,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   readingTime?: T;
   tags?: T;
   relatedArticles?: T;
+  TitleForRelatedArticlesSection?: T;
   meta?:
     | T
     | {

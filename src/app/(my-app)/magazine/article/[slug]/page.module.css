@@ -223,3 +223,72 @@
     display: none;
   }
 }
+
+.sectionHeading {
+  margin-bottom: 56px;
+  font-family: var(--font-montserrat);
+  font-size: 48px;
+  line-height: 154%;
+  font-weight: 700;
+}
+
+.relatesArticles {
+  display: grid;
+  padding-bottom: 120px;
+
+  @media (min-width: 991px) {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 40px;
+  }
+}
+
+.articleCardCover {
+  border-radius: 40px;
+  margin-bottom: 24px;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+.articleCardMeta {
+  display: flex;
+  gap: 12px;
+  font-weight: 600;
+  font-family: var(--font-montserrat);
+  font-size: 16px;
+  line-height: 22px;
+  margin-bottom: 12px;
+}
+
+.articleCardTag {
+  color: var(--violet);
+  font-family: var(--font-open-sans);
+  transition: color 0.2s;
+  font-size: 14px;
+  line-height: 24px;
+
+  &:hover {
+    color: var(--magazine-blue);
+  }
+}
+
+.articleCardTitle {
+  font-family: var(--font-montserrat);
+  margin-bottom: 24px;
+  font-size: 24px;
+  line-height: 32px;
+  font-weight: 600;
+  transition: color 0.2s;
+
+  &:hover {
+    color: var(--magazine-blue);
+  }
+}
+
+.articleCardAuthor {
+  font-family: var(--font-montserrat);
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 500;
+}

@@ -20,7 +20,7 @@ export default async function Page({ params }: { params: Params }) {
 
   const result = await payload.find({
     collection: "articles",
-    depth: 1,
+    depth: 2,
     where: {
       slug: {
         equals: slug,
@@ -139,7 +139,61 @@ export default async function Page({ params }: { params: Params }) {
           </div>
         </div>
       </div>
-      <div style={{ height: 400 }}></div>
+      {article.relatedArticles?.length &&
+        article.relatedArticles?.length > 0 && (
+          <div className="container">
+            <h2 className={styles.sectionHeading}>
+              {article.TitleForRelatedArticlesSection ||
+                "More interesting articles"}
+            </h2>
+            <div className={styles.relatesArticles}>
+              {article.relatedArticles.map(
+                (article) =>
+                  typeof article !== "number" && (
+                    <div key={article.id} className={styles.articleCard}>
+                      {typeof article.cover !== "number" &&
+                        typeof article.cover?.url === "string" && (
+                          <Image
+                            className={styles.articleCardCover}
+                            src={article.cover.url}
+                            alt=""
+                            width="290"
+                            height="200"
+                          />
+                        )}
+                      {article.tags?.length && article.tags.length > 0 && (
+                        <div className={styles.articleCardMeta}>
+                          <span>Articles</span>
+                          {article.tags?.map(
+                            (tag) =>
+                              typeof tag !== "number" && (
+                                <Link
+                                  href={`/magazine/tags/${tag.slug}`}
+                                  key={tag.id}
+                                  className={styles.articleCardTag}
+                                >
+                                  #{tag.name}
+                                </Link>
+                              )
+                          )}
+                        </div>
+                      )}
+                      <h3 className={styles.articleCardTitle}>
+                        <Link href={`/magazine/article/${article.slug}`}>
+                          {article.title}
+                        </Link>
+                      </h3>
+                      {typeof article.author !== "number" && (
+                        <div className={styles.articleCardAuthor}>
+                          {article.author.name}
+                        </div>
+                      )}
+                    </div>
+                  )
+              )}
+            </div>
+          </div>
+        )}
     </>
   );
 }

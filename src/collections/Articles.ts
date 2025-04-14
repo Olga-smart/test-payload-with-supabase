@@ -123,6 +123,10 @@ export const Articles: CollectionConfig = {
               hasMany: true,
               relationTo: "articles",
             },
+            {
+              name: "TitleForRelatedArticlesSection",
+              type: "text",
+            },
           ],
         },
         {
