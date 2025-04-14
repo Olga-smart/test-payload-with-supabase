@@ -1,4 +1,5 @@
 import { ImageBlock } from "@/blocks/Image/Component";
+import { AdvertisingBlock } from "@/blocks/Advertising/Component";
 import {
   DefaultNodeTypes,
   SerializedBlockNode,
@@ -23,6 +24,11 @@ const jsxConverters: JSXConvertersFunction<NodeTypes> = ({
     }: {
       node: SerializedBlockNode<Block> & { fields: Record<string, unknown> };
     }) => <ImageBlock {...node.fields} />,
+    advertising: ({
+      node,
+    }: {
+      node: SerializedBlockNode<Block> & { fields: Record<string, unknown> };
+    }) => <AdvertisingBlock {...node.fields} />,
   },
 });
 

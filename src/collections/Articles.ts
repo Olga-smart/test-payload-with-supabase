@@ -12,6 +12,7 @@ import {
 } from "@payloadcms/plugin-seo/fields";
 import { slugField } from "@/fields/slug";
 import { Image } from "@/blocks/Image";
+import { Advertising } from "@/blocks/Advertising";
 
 export const Articles: CollectionConfig = {
   slug: "articles",
@@ -81,7 +82,7 @@ export const Articles: CollectionConfig = {
                 features: ({ rootFeatures }) => [
                   ...rootFeatures,
                   HeadingFeature({ enabledHeadingSizes: ["h2", "h3", "h4"] }),
-                  BlocksFeature({ blocks: [Image] }),
+                  BlocksFeature({ blocks: [Image, Advertising] }),
                   FixedToolbarFeature(),
                   InlineToolbarFeature(),
                 ],
