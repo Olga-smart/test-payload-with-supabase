@@ -97,9 +97,10 @@
   box-shadow: inset 0 -2px var(--meta-yellow);
   transition-property: box-shadow, color;
   transition-duration: 0.2s;
+  font-weight: inherit !important;
 
   &:hover {
     color: var(--magazine-blue);
-  box-shadow: inset 0 -12px rgba(0, 41, 255, 0.3);
+    box-shadow: inset 0 -12px rgba(0, 41, 255, 0.3);
   }
 }

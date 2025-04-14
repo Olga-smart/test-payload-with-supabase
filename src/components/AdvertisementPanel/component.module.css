@@ -2,6 +2,7 @@
   margin-top: 40px;
   font-family: var(--font-montserrat);
   transition: opacity 0.2s;
+  pointer-events: auto;
 }
 
 .advertisementTitle {
@@ -34,4 +35,5 @@
 
 .hidden {
   opacity: 0;
+  pointer-events: none;
 }

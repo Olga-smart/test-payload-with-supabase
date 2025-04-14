@@ -83,6 +83,10 @@ export default async function Page({ params }: { params: Params }) {
         </div>
       </div>
       <div className={clsx("container", styles.articleBodyAndSidebarWrapper)}>
+        <div className={styles.sidebar}>
+          <SubscribePanel />
+          <AdvertisementPanel />
+        </div>
         <div className={styles.articleBody}>
           {article.content.root.children.map((node, index) => {
             const blockNode = node as SerializedBlockNode<
@@ -104,10 +108,6 @@ export default async function Page({ params }: { params: Params }) {
               </div>
             );
           })}
-        </div>
-        <div className={styles.sidebar}>
-          <SubscribePanel />
-          <AdvertisementPanel />
         </div>
       </div>
       <div className="container">
