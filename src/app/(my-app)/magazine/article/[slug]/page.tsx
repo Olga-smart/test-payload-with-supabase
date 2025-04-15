@@ -14,6 +14,28 @@ import { AdvertisementPanel } from "@/components/AdvertisementPanel";
 
 type Params = Promise<{ slug: string }>;
 
+export async function generateMetadata({ params }: { params: Params }) {
+  const { slug } = await params;
+  const payload = await getPayload({ config });
+
+  const result = await payload.find({
+    collection: "articles",
+    depth: 1,
+    where: { slug: { equals: slug } },
+  });
+
+  const article: Article = result.docs[0];
+
+  if (!article) {
+    notFound();
+  }
+
+  return {
+    title: article.meta?.title || article.title,
+    description: article.meta?.description || "",
+  };
+}
+
 export default async function Page({ params }: { params: Params }) {
   const { slug } = await params;
   const payload = await getPayload({ config });
