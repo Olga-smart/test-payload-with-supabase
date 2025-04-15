@@ -15,6 +15,7 @@ import { Image } from "@/blocks/Image";
 import { Advertising } from "@/blocks/Advertising";
 import { Quote } from "@/blocks/Quote";
 import { Code } from "@/blocks/Code";
+import { Lead } from "@/blocks/Lead";
 
 export const Articles: CollectionConfig = {
   slug: "articles",
@@ -84,7 +85,9 @@ export const Articles: CollectionConfig = {
                 features: ({ rootFeatures }) => [
                   ...rootFeatures,
                   HeadingFeature({ enabledHeadingSizes: ["h2", "h3", "h4"] }),
-                  BlocksFeature({ blocks: [Image, Advertising, Quote, Code] }),
+                  BlocksFeature({
+                    blocks: [Lead, Image, Advertising, Quote, Code],
+                  }),
                   FixedToolbarFeature(),
                   InlineToolbarFeature(),
                 ],
